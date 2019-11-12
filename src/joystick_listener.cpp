@@ -75,6 +75,7 @@ auto JoystickListener::joy_message_callback(sensor_msgs::msg::Joy::UniquePtr joy
     // net linear acceleration
     float netAccel = accelPosX + accelNegX;
 
+    // publishing to topic
         auto acc_msg = std::make_unique<geometry_msgs::msg::AccelStamped>();
         acc_msg->header.frame_id = "zid";
         //acc_msg->header.stamp = "Time";
