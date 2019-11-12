@@ -22,9 +22,9 @@ auto ConfigReader::find_config(std::string const & key,
 ConfigParser::ConfigParser(ConfigReader const & config)
     : zid_{config.find_config("zid", std::string{"z0000000"})}
     // TODO(STUDENT): CODE HERE
-    , joy_config_{}
-    , kinematic_config_{}
-    , refresh_period_{}
+    , joy_config_{4,4,3,0.01,0.01}
+    , kinematic_config_{1,1,1,1}
+    , refresh_period_{1}
 {
     // TODO(STUDENT): CODE HERE
 }
