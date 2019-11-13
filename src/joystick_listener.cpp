@@ -18,7 +18,7 @@ JoystickListener::JoystickListener(std::string const & zid, JoystickConfig confi
 {
     // setting up publisher and subscriber
     auto callback = std::bind(&JoystickListener::joy_message_callback,this,std::placeholders::_1);
-    joystick_input_ = this->create_subscription<sensor_msgs::msg::Joy>("/"+zid+"/joy",10,callback);
+    this->joystick_input_ = create_subscription<sensor_msgs::msg::Joy>("/"+zid+"/joy",10,callback);
     this->acceleration_output_= create_publisher<geometry_msgs::msg::AccelStamped>
         (std::string{"/z0000000/acceleration"}, 10);
 }
@@ -77,8 +77,8 @@ auto JoystickListener::joy_message_callback(sensor_msgs::msg::Joy::UniquePtr joy
 
     // publishing to topic
         auto acc_msg = std::make_unique<geometry_msgs::msg::AccelStamped>();
-        acc_msg->header.frame_id = "zid";
-        //acc_msg->header.stamp = "Time";
+        acc_msg->header.frame_id = zid_;
+        acc_msg->header.stamp = joy_message->header.stamp;
         acc_msg->accel.linear.x = accelX;
         acc_msg->accel.angular.z = accelAng;
         acceleration_output_->publish(std::move(acc_msg));
