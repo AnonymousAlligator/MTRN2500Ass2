@@ -18,7 +18,7 @@ JoystickListener::JoystickListener(std::string const & zid, JoystickConfig confi
 {
     // setting up publisher and subscriber
     auto callback = std::bind(&JoystickListener::joy_message_callback,this,std::placeholders::_1);
-    joystick_input_ = this->create_subscription<sensor_msgs::msg::Joy>("/"+zid+"/joy",10,callback);
+    this->joystick_input_ = create_subscription<sensor_msgs::msg::Joy>("/"+zid+"/joy",10,callback);
     this->acceleration_output_= create_publisher<geometry_msgs::msg::AccelStamped>
         (std::string{"/z0000000/acceleration"}, 10);
 }

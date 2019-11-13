@@ -17,7 +17,6 @@
 #include "transform_broadcaster.hpp"
 #include "velocity_kinematic.hpp"
 
-#include <chrono> // chrono_literals, https://en.cppreference.com/w/cpp/header/chrono
 #include <fstream> // ifstream, https://en.cppreference.com/w/cpp/header/fstream
 #include <iostream> // cout, https://en.cppreference.com/w/cpp/header/iostream
 #include <memory> // make_shared, https://en.cppreference.com/w/cpp/header/memory
@@ -74,8 +73,6 @@ auto create_visualisation_node(
 
 auto main(int argc, char * argv[]) -> int
 {
-    using namespace std::chrono_literals;
-
     try
     {
         rclcpp::init(argc, argv); // Initialise ROS2
@@ -84,26 +81,31 @@ auto main(int argc, char * argv[]) -> int
         // https://index.ros.org/doc/ros2/Tutorials/Intra-Process-Communication/
         auto ros_worker = rclcpp::executors::SingleThreadedExecutor{};
 
-        // Read config from std::in.
-        // TODO(student) code here.
-        auto const config_strings = assignment2::ConfigReader{std::cin};
+        std::ifstream configFile (argv[1]);
+        if (argc > 1) {
+            std::ifstream configFile (argv[1]);
+        } else {
+            std::cerr << "No config file entered.\n";
+        }
+        auto const config_strings = assignment2::ConfigReader{configFile};
         auto const config = assignment2::ConfigParser{config_strings};
-
         // Creating all the nodes we need and register with executor that will
         // service those nodes.
         auto input_node = std::make_shared<assignment2::JoystickListener>(
             "z0000000", config.get_joystick_config());
         ros_worker.add_node(input_node);
 
-        auto velocity_node = std::make_shared<assignment2::VelocityKinematic>(
-            "z0000000", 200ms, config.get_kinematic_config());
+        auto velocity_node =
+            std::make_shared<assignment2::VelocityKinematic>("z0000000",
+                config.get_refresh_period(), config.get_kinematic_config());
         ros_worker.add_node(velocity_node);
 
-        auto pose_node =
-            std::make_shared<assignment2::PoseKinematic>("z0000000", 100ms);
+        auto pose_node = std::make_shared<assignment2::PoseKinematic>(
+            "z0000000", config.get_refresh_period());
         ros_worker.add_node(pose_node);
 
-        auto visual_node = create_visualisation_node("z0000000", 100ms);
+        auto visual_node =
+            create_visualisation_node("z0000000", config.get_refresh_period());
         ros_worker.add_node(visual_node);
 
         auto transform_node =

@@ -14,7 +14,7 @@ namespace assignment2
 PoseKinematic::PoseKinematic(
     std::string const & zid, std::chrono::milliseconds const refresh_period)
     : rclcpp::Node(helper::pose_node_name(zid))
-// TODO(STUDENT): CODE HERE
+
 {
     // TODO(STUDENT): CODE HERE
 }
