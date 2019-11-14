@@ -1,4 +1,4 @@
-zid : z0000001
+zid : z5207293
 refresh_rate: 10
 max_linear_speed : 1       
 max_angular_speed: 45
