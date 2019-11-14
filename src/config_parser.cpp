@@ -4,18 +4,39 @@
 
 #include <iostream>
 #include <string>
+#include <fstream>
+#include <algorithm>
 
 namespace assignment2
 {
 ConfigReader::ConfigReader(std::istream & config_file)
-{
-    // TODO(STUDENT): CODE HERE
+{ 
+    std::string line;
+    int lineCount = 1;
+
+    while(getline(config_file, line)){
+        // printing config line with the line number
+        std::cout << "Line" << " " << lineCount << " : " << line << '\n';
+        lineCount++;
+
+        // breaking up config into key and value and writing it into the unordered map
+        line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
+            auto delimiterPos = line.find(":");
+            auto key = line.substr(0, delimiterPos);
+            auto keyVal = line.substr(delimiterPos + 1);
+            ConfigReader::config_.insert ({key,keyVal});
+    }
+    // iterating and prininting out the key and value from the map
+    for (auto& it: config_) {
+        std::cout << "key: "<< it.first <<" " << "value: " << it.second << "\n";
+    }
+        
 }
 
 auto ConfigReader::find_config(std::string const & key,
     std::string const & default_value) const -> std::string
 {
-    // TODO(STUDENT): CODE HERE
+    
     return std::string{};
 }
 
