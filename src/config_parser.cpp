@@ -48,7 +48,9 @@ auto ConfigReader::find_config(std::string const & key,
         if (it.first == key)
         {
             // return value to key if keys match
-            return std::string{it.first};
+            std::string a {it.second};
+            return a;
+            
         }
     }
     // return default value if no matches found
@@ -59,27 +61,21 @@ ConfigParser::ConfigParser(ConfigReader const & config)
     // parsing key and default values into the finder to find a config value
     // that matches the key or return the default if no match is found
     : zid_{config.find_config("zid", std::string{"z0000000"})}
-    , joy_config_{ 0,1,2,0.1,0.1
-    /*
-        std::stoi(config.find_config("speed_plus_axis",std::string{"0"})),
-        std::stoi(config.find_config("speed_minus_axis",std::string{"1"})),
-        std::stoi(config.find_config("steering_axis",std::string{"2"})),
+    , joy_config_{
+        std::stod(config.find_config("speed_plus_axis",std::string{"0"})),
+        std::stod(config.find_config("speed_minus_axis",std::string{"1"})),
         std::stod(config.find_config("steering_deadzone",std::string{"0.1"})),
         std::stod(config.find_config("speed_deadzone",std::string{"0.1"}))
-    */
+    
     }
-    , kinematic_config_{5,5,3,3
-    /*
+    , kinematic_config_{
         std::stod(config.find_config("max_linear_speed",std::string{"5"})),
         std::stod(config.find_config("max_angular_speed",std::string{"5"})),
         std::stod(config.find_config("max_linear_acceleration",std::string{"3"})),
         std::stod(config.find_config("max_angular_acceleration",std::string{"3"}))
-    */
     }
-    , refresh_period_{10
-    /*
+    , refresh_period_{
         std::stoi(config.find_config("refresh_rate",std::string{"10"}))
-    */
     }
 {
     // TODO(STUDENT): CODE HERE
