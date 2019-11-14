@@ -14,9 +14,15 @@ namespace assignment2
 PoseKinematic::PoseKinematic(
     std::string const & zid, std::chrono::milliseconds const refresh_period)
     : rclcpp::Node(helper::pose_node_name(zid))
-
+    , zid_{zid}
 {
-    // TODO(STUDENT): CODE HERE
+    auto callback = std::bind(
+        &PoseKinematic::velocity_callback, this, std::placeholders::_1);
+    this->velocity_input_ =
+        create_subscription<geometry_msgs::msg::TwistStamped>(
+            "/" + zid + "/velocity", 10, callback);
+    this->pose_output_ = create_publisher<geometry_msgs::msg::PoseStamped>(
+        std::string{"/" + zid + "/pose"}, 10);
 }
 
 auto PoseKinematic::velocity_callback(

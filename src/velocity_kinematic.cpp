@@ -17,11 +17,14 @@ VelocityKinematic::VelocityKinematic(std::string const & zid,
     , zid_{zid}
     , config_{config}
 {
-     // setting up publisher and subscriber
-    auto callback = std::bind(&VelocityKinematic::acceleration_callback,this,std::placeholders::_1);
-    this->acceleration_input_ = create_subscription<geometry_msgs::msg::AccelStamped>("/"+zid+"/acceleration",10,callback);
-    this->velocity_output_ = create_publisher<geometry_msgs::msg::TwistStamped>
-        (std::string{"/z0000000/velocity"}, 10);
+    // setting up publisher and subscriber
+    auto callback = std::bind(
+        &VelocityKinematic::acceleration_callback, this, std::placeholders::_1);
+    this->acceleration_input_ =
+        create_subscription<geometry_msgs::msg::AccelStamped>(
+            "/" + zid + "/acceleration", 10, callback);
+    this->velocity_output_ = create_publisher<geometry_msgs::msg::TwistStamped>(
+        std::string{"/z0000000/velocity"}, 10);
 }
 
 auto VelocityKinematic::acceleration_callback(
