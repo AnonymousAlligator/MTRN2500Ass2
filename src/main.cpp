@@ -81,9 +81,17 @@ auto main(int argc, char * argv[]) -> int
         // https://index.ros.org/doc/ros2/Tutorials/Intra-Process-Communication/
         auto ros_worker = rclcpp::executors::SingleThreadedExecutor{};
 
-        // Read config from std::in.
-        // TODO(student) code here.
-        auto const config_strings = assignment2::ConfigReader{std::cin};
+        // checking for config file
+        std::ifstream configFile(argv[1]);
+        if (argc > 1)
+        {
+            std::ifstream configFile(argv[1]);
+        }
+        else
+        {
+            std::cerr << "No config file entered. Values will be default.\n";
+        }
+        auto const config_strings = assignment2::ConfigReader{configFile};
         auto const config = assignment2::ConfigParser{config_strings};
 
         // Creating all the nodes we need and register with executor that will
