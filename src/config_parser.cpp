@@ -2,50 +2,85 @@
 
 #include "config_parser.hpp"
 
-#include <iostream>
-#include <string>
-#include <fstream>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <memory>
+#include <string>
 
 namespace assignment2
 {
 ConfigReader::ConfigReader(std::istream & config_file)
-{ 
+{
     std::string line;
     int lineCount = 1;
 
-    while(getline(config_file, line)){
+    while (getline(config_file, line))
+    {
         // printing config line with the line number
-        std::cout << "Line" << " " << lineCount << " : " << line << '\n';
+        std::cout << "Line"
+                  << " " << lineCount << " : " << line << '\n';
         lineCount++;
 
-        // breaking up config into key and value and writing it into the unordered map
-        line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
-            auto delimiterPos = line.find(":");
-            auto key = line.substr(0, delimiterPos);
-            auto keyVal = line.substr(delimiterPos + 1);
-            ConfigReader::config_.insert ({key,keyVal});
+        // breaking up config into key and value and writing it into the
+        // unordered map
+        line.erase(
+            std::remove_if(line.begin(), line.end(), isspace), line.end());
+        auto delimiterPos = line.find(":");
+        auto key = line.substr(0, delimiterPos);
+        auto keyVal = line.substr(delimiterPos + 1);
+        ConfigReader::config_.insert({key, keyVal});
     }
     // iterating and prininting out the key and value from the map
-    for (auto& it: config_) {
-        std::cout << "key: "<< it.first <<" " << "value: " << it.second << "\n";
+    for (auto & it : config_)
+    {
+        std::cout << "key: " << it.first << " "
+                  << "value: " << it.second << "\n";
     }
-        
 }
 
 auto ConfigReader::find_config(std::string const & key,
     std::string const & default_value) const -> std::string
 {
-    
-    return std::string{};
+    // iterate through map keys to find matching key
+    for (auto & it : config_)
+    {
+        if (it.first == key)
+        {
+            // return value to key if keys match
+            return std::string{it.first};
+        }
+    }
+    // return default value if no matches found
+    return std::string{default_value};
 }
 
 ConfigParser::ConfigParser(ConfigReader const & config)
+    // parsing key and default values into the finder to find a config value
+    // that matches the key or return the default if no match is found
     : zid_{config.find_config("zid", std::string{"z0000000"})}
-    // TODO(STUDENT): CODE HERE
-    , joy_config_{4,4,3,0.01,0.01}
-    , kinematic_config_{1,1,1,1}
-    , refresh_period_{1}
+    , joy_config_{ 0,1,2,0.1,0.1
+    /*
+        std::stoi(config.find_config("speed_plus_axis",std::string{"0"})),
+        std::stoi(config.find_config("speed_minus_axis",std::string{"1"})),
+        std::stoi(config.find_config("steering_axis",std::string{"2"})),
+        std::stod(config.find_config("steering_deadzone",std::string{"0.1"})),
+        std::stod(config.find_config("speed_deadzone",std::string{"0.1"}))
+    */
+    }
+    , kinematic_config_{5,5,3,3
+    /*
+        std::stod(config.find_config("max_linear_speed",std::string{"5"})),
+        std::stod(config.find_config("max_angular_speed",std::string{"5"})),
+        std::stod(config.find_config("max_linear_acceleration",std::string{"3"})),
+        std::stod(config.find_config("max_angular_acceleration",std::string{"3"}))
+    */
+    }
+    , refresh_period_{10
+    /*
+        std::stoi(config.find_config("refresh_rate",std::string{"10"}))
+    */
+    }
 {
     // TODO(STUDENT): CODE HERE
 }
