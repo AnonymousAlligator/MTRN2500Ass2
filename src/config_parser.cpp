@@ -42,19 +42,21 @@ ConfigReader::ConfigReader(std::istream & config_file)
 auto ConfigReader::find_config(std::string const & key,
     std::string const & default_value) const -> std::string
 {
+    std::string configValue;
     // iterate through map keys to find matching key
     for (auto & it : config_)
     {
         if (it.first == key)
         {
             // return value to key if keys match
-            std::string a {it.second};
-            return a;
+            configValue = {it.second};
+            return configValue;
             
         }
     }
     // return default value if no matches found
-    return std::string{default_value};
+    configValue = {default_value};
+    return configValue;
 }
 
 ConfigParser::ConfigParser(ConfigReader const & config)
